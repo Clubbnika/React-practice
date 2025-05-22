@@ -9,28 +9,65 @@ import { CategoryList } from './components/CategoryList';
 import { ProductsList } from './components/ProductsList';
 
 const getFilteredProducts = (products, filters) => {
-  let filteredProducts = [...products];
-
   if (filters.query !== '') {
     const normalizedQuery = filters.query.trim().toLowerCase();
-    filteredProducts = filteredProducts.filter(product =>
-      product.name.toLowerCase().includes(normalizedQuery),
-    );
+
+    const filteredByQuery = products.filter(product => {
+      return product.name.toLowerCase().includes(normalizedQuery);
+    });
+
+    if (filters.userId !== null) {
+      const filteredByUser = filteredByQuery.filter(product => {
+        return product.user?.id === filters.userId;
+      });
+
+      if (filters.categoryId !== null) {
+        const filteredByCategory = filteredByUser.filter(product => {
+          return product.category?.id === filters.categoryId;
+        });
+
+        return filteredByCategory;
+      }
+
+      return filteredByUser;
+    }
+
+    if (filters.categoryId !== null) {
+      const filteredByCategory = filteredByQuery.filter(product => {
+        return product.category?.id === filters.categoryId;
+      });
+
+      return filteredByCategory;
+    }
+
+    return filteredByQuery;
   }
 
   if (filters.userId !== null) {
-    filteredProducts = filteredProducts.filter(
-      product => product.user?.id === filters.userId,
-    );
+    const filteredByUser = products.filter(product => {
+      return product.user?.id === filters.userId;
+    });
+
+    if (filters.categoryId !== null) {
+      const filteredByCategory = filteredByUser.filter(product => {
+        return product.category?.id === filters.categoryId;
+      });
+
+      return filteredByCategory;
+    }
+
+    return filteredByUser;
   }
 
   if (filters.categoryId !== null) {
-    filteredProducts = filteredProducts.filter(
-      product => product.category?.id === filters.categoryId,
-    );
+    const filteredByCategory = products.filter(product => {
+      return product.category?.id === filters.categoryId;
+    });
+
+    return filteredByCategory;
   }
 
-  return filteredProducts;
+  return products;
 };
 
 const preparedProducts = productsFromServer.map(product => {
@@ -52,7 +89,6 @@ export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [query, setQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [selectedProductId, setSelectedProductId] = useState(null);
 
   const filteredProducts = getFilteredProducts(preparedProducts, {
     query,
@@ -121,7 +157,6 @@ export const App = () => {
                   setQuery('');
                   setSelectedUserId(null);
                   setSelectedCategoryId(null);
-                  setSelectedProductId(null);
                 }}
               >
                 Reset all filters

@@ -1,14 +1,9 @@
-export const ProductsList = ({
-  products,
-  selectedProductId,
-  onSelectProduct,
-}) => (
+import React from 'react';
+
+export const ProductsList = ({ products }) => (
   <tbody>
     {products.map(product => (
-      <tr
-        key={product.id}
-        data-cy="Product"
-      >
+      <tr key={product.id} data-cy="Product">
         <td className="has-text-weight-bold" data-cy="ProductId">
           {product.id}
         </td>

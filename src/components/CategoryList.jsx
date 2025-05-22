@@ -7,7 +7,7 @@ export const CategoryList = ({
     <a
       href="#/"
       data-cy="AllCategories"
-      className={`button mr-6 is-outlined is-success`}
+      className="button mr-6 is-outlined is-success"
       onClick={() => onSelectCategory(null)}
     >
       All
